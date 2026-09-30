@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken"); // cookie parser will be in app.js
 require("dotenv").config();
 
+// user controllers
 async function registerUser(req, res) {
   const { fullName, email, password } = req.body;
   // it can not read data directly from body we've to use app.use(express.json) in app.js file
@@ -91,6 +92,7 @@ function logoutUser(req, res) {
   })
 }
 
+// foodPartner controllers
 async function registerFoodPartner(req, res){
   const { name, email, password } = req.body;
 
@@ -165,6 +167,7 @@ function logoutFoodPartner(req, res) {
     message: "User logged successfully"
   })
 }
+
 
 
 module.exports = {
