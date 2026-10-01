@@ -1,20 +1,28 @@
-const Imagekit = require('imagekit');
+const ImageKit = require("imagekit");
 
-const imagekit = new Imagekit({
+const imagekit = new ImageKit({
   publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
   urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
 });
 
 async function uploadFile(file, fileName) {
-    const result = await imagekit.upload({
-        file: file,
-        fileName: fileName
-    })
+  if (!file) {
+    throw new Error("File is required");
+  }
 
-    return result; // return the url of uploaded file
+  if (!fileName) {
+    throw new Error("File name is required");
+  }
+
+  const result = await imagekit.upload({
+    file,
+    fileName,
+  });
+
+  return result;
 }
 
 module.exports = {
-    uploadFile
-}
+  uploadFile,
+};

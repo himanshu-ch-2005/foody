@@ -1,31 +1,48 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
-const foodPartnerSchema = new mongoose.Schema({
-  restaurant: {
-    type: String,
-    required: true,
+const foodPartnerSchema = new mongoose.Schema(
+  {
+    restaurant: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    contact: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    address: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
+    },
+
+    password: {
+      type: String,
+      required: true,
+    },
   },
-  name: {
-    type: String,
-    required: true,
+  {
+    timestamps: true,
   },
-  contact: {
-    type: String,
-    required: true,
-  },
-  address: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required:true
-  },
-});
+);
 
 const foodPartnerModel = mongoose.model("foodpartner", foodPartnerSchema);
 

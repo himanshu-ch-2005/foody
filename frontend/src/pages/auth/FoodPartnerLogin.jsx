@@ -1,12 +1,14 @@
 import { useState } from "react";
 import axios from "axios";
-import AuthInput from "../components/AuthInput";
-import "../styles/auth.css";
-import { Link } from "react-router-dom";
+import AuthInput from "../../components/AuthInput";
+import "../../styles/auth.css";
+import { Link, useNavigate } from "react-router-dom";
 
-const UserRegister = () => {
+const FoodPartnerLogin = () => {
+
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    fullName: "",
     email: "",
     password: "",
   });
@@ -31,25 +33,21 @@ const UserRegister = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/auth/user/register",
+        "http://localhost:3000/api/auth/partner/login",
         formData,
         {
           withCredentials: true,
         },
       );
 
-        setMessage(response.data?.message || "Registration successful!");
-
-      setFormData({
-        fullName: "",
-        email: "",
-        password: "",
-      });
+      setMessage(response.data?.message || "Login successful!");
+      localStorage.setItem("role", "partner");
+      navigate("/create-food");
     } catch (error) {
         setMessage("");
       setError(
         error.response?.data?.message ||
-          "Registration failed. Please try again.",
+          "Login failed. Please check your credentials.",
       );
     } finally {
       setLoading(false);
@@ -64,23 +62,17 @@ const UserRegister = () => {
           <span>Foody</span>
         </div>
 
-        <h1 className="auth-heading">Create your account</h1>
+        <span className="auth-role-note">Food Partner</span>
 
-        <p className="auth-subtitle">Join Foody and discover great food.</p>
+        <h1 className="auth-heading">Welcome back</h1>
+
+        <p className="auth-subtitle">Sign in to manage your restaurant.</p>
 
         {message && <div className="auth-success">{message}</div>}
 
         {error && <div className="auth-error">{error}</div>}
 
         <form className="auth-form" onSubmit={handleSubmit}>
-          <AuthInput
-            label="Full Name"
-            name="fullName"
-            placeholder="Enter your full name"
-            value={formData.fullName}
-            onChange={handleChange}
-          />
-
           <AuthInput
             label="Email Address"
             name="email"
@@ -94,20 +86,20 @@ const UserRegister = () => {
             label="Password"
             name="password"
             type="password"
-            placeholder="Create a password"
+            placeholder="Enter your password"
             value={formData.password}
             onChange={handleChange}
           />
 
           <button className="auth-button" type="submit" disabled={loading}>
-            {loading ? "Creating..." : "Create account"}
+            {loading ? "Signing in..." : "Sign in"}
           </button>
         </form>
 
         <p className="auth-footer">
-          Already have an account?{" "}
-          <Link className="auth-link" to="/user/login">
-            Sign in
+          Don't have a partner account?{" "}
+          <Link className="auth-link" to="/partner/register">
+            Create one
           </Link>
         </p>
       </section>
@@ -115,4 +107,4 @@ const UserRegister = () => {
   );
 };
 
-export default UserRegister;
+export default FoodPartnerLogin;
