@@ -16,4 +16,7 @@ router.post('/', authMiddleware.authFoodPartnerMiddleware,
     upload.single("video"),
     foodController.createFood);
 
+// for users to scroll and get videos
+router.get('/',authMiddleware.authUserMiddleware,foodController.getFoodItems) 
+
 module.exports = router;

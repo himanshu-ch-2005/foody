@@ -94,14 +94,14 @@ function logoutUser(req, res) {
 
 // foodPartner controllers
 async function registerFoodPartner(req, res){
-  const { name, email, password } = req.body;
+  const { restaurant,name, contact, address, email, password } = req.body;
 
   const isPartnerAlreadyExists = await foodPartnerModel.findOne({
     email
   })
 
   if (isPartnerAlreadyExists) {
-    res.status(400).json({
+    return res.status(400).json({
       message: "Partner already exists"
     })
   }
@@ -109,7 +109,10 @@ async function registerFoodPartner(req, res){
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const partner = await foodPartnerModel.create({
+    restaurant,
     name,
+    contact,
+    address,
     email,
     password:hashedPassword
   })
@@ -124,8 +127,11 @@ async function registerFoodPartner(req, res){
     partner: {
       _id: partner._id,
       email: partner.email,
-      name: partner.name
-    }
+      name: partner.name,
+      restaurant: partner.restaurant,
+      contact: partner.contact,
+      address: partner.address
+    },
   });
 
 }
@@ -136,7 +142,7 @@ async function loginFoodPartner(req, res) {
     email
   })
   if (!partner) {
-    res.status(400).json({
+    return res.status(400).json({
       message:"Invalid Email or Password"
     })
   }
