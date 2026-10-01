@@ -1,0 +1,378 @@
+.home-page {
+    width: 100%;
+    height: 100dvh;
+    overflow: hidden;
+    background: #000;
+}
+
+.food-feed {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    overscroll-behavior-y: contain;
+    scrollbar-width: none;
+    background: #000;
+}
+
+.food-feed::-webkit-scrollbar {
+    display: none;
+}
+
+.food-reel {
+    position: relative;
+    width: 100%;
+    height: 100dvh;
+    min-height: 100dvh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    overflow: hidden;
+    background: #101010;
+}
+
+.food-reel__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: #101010;
+    cursor: pointer;
+}
+
+.food-reel__shade {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(to bottom,
+            rgba(0, 0, 0, 0.45),
+            transparent 20%),
+        linear-gradient(to top,
+            rgba(0, 0, 0, 0.82),
+            transparent 45%);
+}
+
+.food-reel__topbar {
+    position: absolute;
+    top: max(18px, env(safe-area-inset-top));
+    left: 0;
+    right: 0;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 22px;
+
+    color: #fff;
+}
+
+.food-reel__brand {
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.food-reel__sound {
+    width: 40px;
+    height: 40px;
+
+    display: grid;
+    place-items: center;
+
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 50%;
+
+    background: rgba(0, 0, 0, 0.28);
+    color: #fff;
+
+    cursor: pointer;
+
+    backdrop-filter: blur(8px);
+}
+
+.food-reel__content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: max(24px,
+            env(safe-area-inset-bottom));
+
+    z-index: 2;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 18px;
+    padding: 24px 22px;
+
+    color: #fff;
+}
+
+.food-reel__details {
+    min-width: 0;
+    max-width: min(680px,
+            calc(100% - 76px));
+}
+
+.food-reel__details h2 {
+    margin: 0 0 7px;
+
+    font-size: clamp(22px, 3vw, 32px);
+    line-height: 1.15;
+    font-weight: 800;
+}
+
+.food-reel__details p {
+    max-width: 620px;
+
+    margin: 0;
+
+    display: -webkit-box;
+    overflow: hidden;
+
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+
+    color: rgba(255, 255, 255, 0.88);
+
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.food-reel__details p.is-expanded {
+    display: block;
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+.food-reel__more {
+    padding: 0;
+    border: 0;
+    background: none;
+
+    color: #fff;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.food-reel__store {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    margin-top: 14px;
+    padding: 11px 17px;
+
+    border: 0;
+    border-radius: 999px;
+
+    background: #fff;
+    color: #151515;
+
+    font: inherit;
+    font-size: 14px;
+    font-weight: 750;
+
+    cursor: pointer;
+}
+
+.food-reel__store:disabled {
+    opacity: 0.65;
+    cursor: wait;
+}
+
+.food-reel__store svg,
+.reel-action svg {
+    width: 21px;
+    height: 21px;
+
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.food-reel__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.reel-action {
+    width: 48px;
+    min-height: 52px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 4px;
+    padding: 5px;
+
+    border: 0;
+    background: none;
+    color: #fff;
+
+    font: inherit;
+    cursor: pointer;
+}
+
+.reel-action span {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.reel-action.is-active {
+    color: #ff5364;
+}
+
+.reel-action.is-active svg.is-filled {
+    fill: currentColor;
+}
+
+.home-page--centered {
+    display: grid;
+    place-items: center;
+
+    min-height: 100dvh;
+    padding: 24px;
+
+    background: var(--bg-color);
+}
+
+.home-loader {
+    display: flex;
+    gap: 7px;
+}
+
+.home-loader span {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: var(--primary-color);
+
+    animation: foody-pulse 0.9s infinite alternate;
+}
+
+.home-loader span:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.home-loader span:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+@keyframes foody-pulse {
+    to {
+        opacity: 0.25;
+        transform: translateY(-3px);
+    }
+}
+
+.home-message {
+    width: min(440px, 100%);
+
+    padding: 32px;
+
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+
+    background: var(--card-color);
+
+    text-align: center;
+}
+
+.home-message__brand {
+    color: var(--primary-color);
+
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.home-message h1 {
+    margin: 18px 0 8px;
+    font-size: 24px;
+}
+
+.home-message p {
+    margin: 0;
+
+    color: var(--muted-color);
+    line-height: 1.5;
+}
+
+.home-message button,
+.home-message a {
+    display: inline-flex;
+
+    margin-top: 20px;
+    padding: 11px 16px;
+
+    border: 0;
+    border-radius: 9px;
+
+    background: var(--primary-color);
+    color: var(--primary-text);
+
+    font: inherit;
+    font-weight: 700;
+
+    text-decoration: none;
+    cursor: pointer;
+}
+
+@media (min-width: 900px) {
+    .food-reel__content {
+        padding: 32px 42px;
+    }
+
+    .food-reel__topbar {
+        padding: 0 42px;
+    }
+}
+
+@media (max-width: 560px) {
+    .food-reel__content {
+        gap: 10px;
+        padding: 18px 14px;
+    }
+
+    .food-reel__topbar {
+        padding: 0 14px;
+    }
+
+    .food-reel__details {
+        max-width: calc(100% - 60px);
+    }
+
+    .food-reel__details h2 {
+        font-size: 22px;
+    }
+
+    .food-reel__details p {
+        font-size: 13px;
+    }
+
+    .food-reel__store {
+        margin-top: 11px;
+        padding: 10px 14px;
+        font-size: 13px;
+    }
+
+    .food-reel__actions {
+        gap: 9px;
+    }
+}

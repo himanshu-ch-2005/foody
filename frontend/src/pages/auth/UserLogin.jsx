@@ -1,10 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
-import AuthInput from "../components/AuthInput";
-import "../styles/auth.css";
+import AuthInput from "../../components/AuthInput";
+import "../../styles/auth.css";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const UserLogin = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -38,6 +40,10 @@ const UserLogin = () => {
       );
 
       setMessage(response.data?.message || "Login successful!");
+
+      localStorage.setItem("role", "user");
+
+      navigate("/")
     } catch (error) {
         setMessage("");
       setError(
