@@ -1,3 +1,4 @@
+const isProduction = process.env.NODE_ENV === "production";
 const userModel = require("../models/user.models");
 const foodPartnerModel = require("../models/foodpartner.models");
 
@@ -48,8 +49,8 @@ async function registerUser(req, res) {
 
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: "lax",
-      secure: false,
+      sameSite: isProduction ? "none" : "lax",
+      secure: isProduction,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -102,8 +103,8 @@ async function loginUser(req, res) {
 
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: "lax",
-      secure: false,
+      sameSite: isProduction ? "none" : "lax",
+      secure: isProduction,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -170,8 +171,8 @@ async function registerFoodPartner(req, res) {
 
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: "lax",
-      secure: false,
+      sameSite: isProduction ? "none" : "lax",
+      secure: isProduction,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -228,8 +229,8 @@ async function loginFoodPartner(req, res) {
 
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: "lax",
-      secure: false,
+      sameSite: isProduction ? "none" : "lax",
+      secure: isProduction,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
