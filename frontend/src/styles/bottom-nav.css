@@ -1,9 +1,9 @@
 .bottom-nav {
-    position: fixed;
+    position: absolute;
     z-index: 9999;
 
     left: 50%;
-    bottom: 20px;
+    bottom: max(12px, env(safe-area-inset-bottom));
 
     transform: translateX(-50%);
 
@@ -11,7 +11,7 @@
     align-items: center;
     gap: 6px;
 
-    padding: 8px;
+    padding: 7px;
 
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 18px;
@@ -21,6 +21,7 @@
     box-shadow: 0 10px 35px rgba(0, 0, 0, 0.3);
 
     backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
 }
 
 .bottom-nav__item {
@@ -70,8 +71,8 @@
     color: #fff;
 }
 
-@media (min-width: 700px) {
+@media (max-width: 600px) {
     .bottom-nav {
-        bottom: 22px;
+        bottom: max(12px, env(safe-area-inset-bottom));
     }
 }

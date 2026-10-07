@@ -1,19 +1,20 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+
 import VideoCard from "../../components/VideoCard";
-import api from "../../services/api";
-import "../../styles/home.css";
 import BottomNav from "../../components/BottomNav";
+import api from "../../services/api";
+
+import "../../styles/home.css";
 
 const Home = () => {
   const navigate = useNavigate();
+  const feedRef = useRef(null);
 
   const [foods, setFoods] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
-  const feedRef = useRef(null);
 
   const fetchFoods = useCallback(async () => {
     setLoading(true);
@@ -23,12 +24,9 @@ const Home = () => {
       const response = await api.get("/food");
 
       setFoods(response.data?.foodItems || []);
-    } catch (requestError) {
-      if (requestError.response?.status === 401) {
-        navigate("/user/login", { replace: true });
-        return;
-      }
 
+      setActiveIndex(0);
+    } catch (requestError) {
       setError(
         requestError.response?.data?.message ||
           "Unable to load the Foody feed.",
@@ -36,7 +34,7 @@ const Home = () => {
     } finally {
       setLoading(false);
     }
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -80,7 +78,12 @@ const Home = () => {
   const updateFood = (foodId, changes) => {
     setFoods((current) =>
       current.map((food) =>
-        food._id === foodId ? { ...food, ...changes } : food,
+        food._id === foodId
+          ? {
+              ...food,
+              ...changes,
+            }
+          : food,
       ),
     );
   };
@@ -127,6 +130,8 @@ const Home = () => {
           <span />
           <span />
         </div>
+
+        <BottomNav />
       </main>
     );
   }
@@ -145,11 +150,15 @@ const Home = () => {
             Try again
           </button>
         </section>
+
+        <BottomNav />
       </main>
     );
   }
 
   if (!foods.length) {
+    const isPartner = localStorage.getItem("role") === "partner";
+
     return (
       <main className="home-page home-page--centered">
         <section className="home-message">
@@ -157,10 +166,16 @@ const Home = () => {
 
           <h1>No food videos yet</h1>
 
-          <p>Food videos will appear here when a partner uploads one.</p>
+          <p>
+            {isPartner
+              ? "Upload your first food video to start showing it here."
+              : "Food videos will appear here when a partner uploads one."}
+          </p>
 
-          <Link to="/create-food">Add a food video</Link>
+          {isPartner && <Link to="/create-food">Add a food video</Link>}
         </section>
+
+        <BottomNav />
       </main>
     );
   }
@@ -178,6 +193,7 @@ const Home = () => {
           />
         ))}
       </div>
+
       <BottomNav />
     </main>
   );

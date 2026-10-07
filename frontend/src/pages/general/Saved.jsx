@@ -1,12 +1,15 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import VideoCard from "../../components/VideoCard";
 import BottomNav from "../../components/BottomNav";
 import api from "../../services/api";
+
 import "../../styles/saved.css";
 
 const Saved = () => {
   const navigate = useNavigate();
+  const feedRef = useRef(null);
 
   const [foods, setFoods] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -20,19 +23,24 @@ const Saved = () => {
     try {
       const response = await api.get("/food/save");
 
-      const savedFoods = response.data?.foodItems || [];
+      const rawFoods = response.data?.savedFoods || [];
 
-      setFoods(
-        savedFoods.map((food) => ({
+      const normalizedFoods = rawFoods
+        .map((item) => item?.food || item)
+        .filter((food) => food?._id && food?.video)
+        .map((food) => ({
           ...food,
           saved: true,
-        })),
-      );
+        }));
+
+      setFoods(normalizedFoods);
+      setActiveIndex(0);
     } catch (requestError) {
       if (requestError.response?.status === 401) {
         navigate("/user/login", {
           replace: true,
         });
+
         return;
       }
 
@@ -45,15 +53,24 @@ const Saved = () => {
   }, [navigate]);
 
   useEffect(() => {
+    if (localStorage.getItem("role") === "partner") {
+      navigate("/", {
+        replace: true,
+      });
+
+      return;
+    }
+
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchSavedFoods();
-  }, [fetchSavedFoods]);
+  }, [fetchSavedFoods, navigate]);
 
   useEffect(() => {
-    const feed = document.querySelector(".saved-feed");
+    const container = feedRef.current;
 
-    if (!feed) return undefined;
+    if (!container) return undefined;
 
-    const cards = Array.from(feed.querySelectorAll(".food-reel"));
+    const cards = Array.from(container.querySelectorAll(".food-reel"));
 
     if (!cards.length) return undefined;
 
@@ -72,7 +89,7 @@ const Saved = () => {
         }
       },
       {
-        root: feed,
+        root: container,
         threshold: [0.6, 0.8, 0.95],
       },
     );
@@ -85,7 +102,12 @@ const Saved = () => {
   const updateFood = (foodId, changes) => {
     setFoods((current) =>
       current.map((food) =>
-        food._id === foodId ? { ...food, ...changes } : food,
+        food._id === foodId
+          ? {
+              ...food,
+              ...changes,
+            }
+          : food,
       ),
     );
   };
@@ -116,7 +138,7 @@ const Saved = () => {
       }
 
       updateFood(foodId, {
-        saved: response.data?.saved,
+        saved: true,
         savesCount: response.data?.savesCount ?? 0,
       });
     } catch (requestError) {
@@ -185,7 +207,7 @@ const Saved = () => {
         <h1>Saved</h1>
       </div>
 
-      <div className="saved-feed">
+      <div className="saved-feed" ref={feedRef}>
         {foods.map((food, index) => (
           <VideoCard
             key={food._id}

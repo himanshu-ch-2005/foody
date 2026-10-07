@@ -2,14 +2,9 @@ const express = require("express");
 
 const foodPartnerController = require("../controllers/foodpartner.controllers");
 
-const { authUserMiddleware } = require("../middlewares/auth.middleware");
-
 const router = express.Router();
 
-router.get(
-  "/:id",
-  authUserMiddleware,
-  foodPartnerController.getFoodPartnerById,
-);
+// Store pages are public.
+router.get("/:id", foodPartnerController.getFoodPartnerById);
 
 module.exports = router;

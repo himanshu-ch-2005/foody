@@ -2,12 +2,11 @@ import { useState } from "react";
 import axios from "axios";
 import AuthInput from "../../components/AuthInput";
 import "../../styles/auth.css";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const UserRegister = () => {
-
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -41,16 +40,14 @@ const UserRegister = () => {
         },
       );
 
-        setMessage(response.data?.message || "Registration successful!");
+      localStorage.setItem("role", "user");
 
-      setFormData({
-        fullName: "",
-        email: "",
-        password: "",
-      });
-      navigate("/")
+      setMessage(response.data?.message || "Registration successful!");
+
+      navigate("/");
     } catch (error) {
-        setMessage("");
+      setMessage("");
+
       setError(
         error.response?.data?.message ||
           "Registration failed. Please try again.",

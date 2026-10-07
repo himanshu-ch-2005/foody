@@ -55,9 +55,57 @@ async function getFoodItems(req, res) {
       })
       .lean();
 
+    // No logged-in user:
+    // return the feed with default interaction states.
+    if (!req.user || foodItems.length === 0) {
+      return res.status(200).json({
+        message: "Food items fetched successfully",
+
+        foodItems: foodItems.map((food) => ({
+          ...food,
+          liked: false,
+          saved: false,
+        })),
+      });
+    }
+
+    const foodIds = foodItems.map((food) => food._id);
+
+    const [likes, saves] = await Promise.all([
+      likeModel
+        .find({
+          user: req.user._id,
+          food: {
+            $in: foodIds,
+          },
+        })
+        .select("food")
+        .lean(),
+
+      saveModel
+        .find({
+          user: req.user._id,
+          food: {
+            $in: foodIds,
+          },
+        })
+        .select("food")
+        .lean(),
+    ]);
+
+    const likedIds = new Set(likes.map((item) => String(item.food)));
+
+    const savedIds = new Set(saves.map((item) => String(item.food)));
+
+    const personalizedFoods = foodItems.map((food) => ({
+      ...food,
+      liked: likedIds.has(String(food._id)),
+      saved: savedIds.has(String(food._id)),
+    }));
+
     return res.status(200).json({
       message: "Food items fetched successfully",
-      foodItems,
+      foodItems: personalizedFoods,
     });
   } catch (error) {
     console.error("Get food items error:", error);
@@ -111,7 +159,7 @@ async function likeFood(req, res) {
       return res.status(200).json({
         message: "Food unliked successfully",
         liked: false,
-        likeCount: Math.max(0, updatedFood.likeCount),
+        likeCount: Math.max(0, updatedFood?.likeCount || 0),
       });
     }
 
@@ -135,9 +183,15 @@ async function likeFood(req, res) {
     return res.status(200).json({
       message: "Food liked successfully",
       liked: true,
-      likeCount: updatedFood.likeCount,
+      likeCount: updatedFood?.likeCount || 0,
     });
   } catch (error) {
+    if (error?.code === 11000) {
+      return res.status(409).json({
+        message: "Food is already liked",
+      });
+    }
+
     console.error("Like food error:", error);
 
     return res.status(500).json({
@@ -189,7 +243,7 @@ async function saveFood(req, res) {
       return res.status(200).json({
         message: "Food unsaved successfully",
         saved: false,
-        savesCount: Math.max(0, updatedFood.savesCount),
+        savesCount: Math.max(0, updatedFood?.savesCount || 0),
       });
     }
 
@@ -213,9 +267,15 @@ async function saveFood(req, res) {
     return res.status(200).json({
       message: "Food saved successfully",
       saved: true,
-      savesCount: updatedFood.savesCount,
+      savesCount: updatedFood?.savesCount || 0,
     });
   } catch (error) {
+    if (error?.code === 11000) {
+      return res.status(409).json({
+        message: "Food is already saved",
+      });
+    }
+
     console.error("Save food error:", error);
 
     return res.status(500).json({
@@ -226,14 +286,22 @@ async function saveFood(req, res) {
 
 async function getSaveFood(req, res) {
   try {
-    const savedFoods = await saveModel
+    const savedRecords = await saveModel
       .find({
         user: req.user._id,
       })
       .populate("food")
       .sort({
         createdAt: -1,
-      });
+      })
+      .lean();
+
+    const savedFoods = savedRecords
+      .filter((record) => record.food)
+      .map((record) => ({
+        ...record.food,
+        saved: true,
+      }));
 
     return res.status(200).json({
       message: "Saved foods retrieved successfully",

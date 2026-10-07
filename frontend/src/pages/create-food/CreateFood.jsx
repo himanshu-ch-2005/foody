@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+
 import api from "../../services/api";
+
 import "../../styles/create-food.css";
 
 const CreateFood = () => {
@@ -12,10 +14,13 @@ const CreateFood = () => {
   });
 
   const [video, setVideo] = useState(null);
+
   const [preview, setPreview] = useState("");
 
   const [loading, setLoading] = useState(false);
+
   const [error, setError] = useState("");
+
   const [message, setMessage] = useState("");
 
   const handleChange = (event) => {
@@ -53,6 +58,7 @@ const CreateFood = () => {
     }
 
     setVideo(file);
+
     setPreview(URL.createObjectURL(file));
   };
 
@@ -65,6 +71,7 @@ const CreateFood = () => {
 
     if (!video) {
       setError("Please select a food video.");
+
       setLoading(false);
       return;
     }
@@ -73,7 +80,9 @@ const CreateFood = () => {
       const body = new FormData();
 
       body.append("name", formData.name.trim());
+
       body.append("description", formData.description.trim());
+
       body.append("video", video);
 
       const response = await api.post("/food", body, {
@@ -91,8 +100,12 @@ const CreateFood = () => {
 
       setVideo(null);
       setPreview("");
+
+      setTimeout(() => navigate("/"), 300);
     } catch (requestError) {
       if (requestError.response?.status === 401) {
+        localStorage.removeItem("role");
+
         navigate("/partner/login", {
           replace: true,
         });

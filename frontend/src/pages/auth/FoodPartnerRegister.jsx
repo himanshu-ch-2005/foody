@@ -2,11 +2,9 @@ import { useState } from "react";
 import axios from "axios";
 import AuthInput from "../../components/AuthInput";
 import "../../styles/auth.css";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const FoodPartnerRegister = () => {
-
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -45,22 +43,17 @@ const FoodPartnerRegister = () => {
         },
       );
 
+      localStorage.setItem("role", "partner");
+
       setMessage(
         response.data?.message || "Food partner registration successful!",
       );
 
-      setFormData({
-        restaurant: "",
-        name: "",
-        contact: "",
-        address: "",
-        email: "",
-        password: "",
-      });
-      navigate("/create-food")
+      navigate("/");
     } catch (error) {
-        setMessage("");
-        setError(
+      setMessage("");
+
+      setError(
         error.response?.data?.message ||
           "Registration failed. Please try again.",
       );

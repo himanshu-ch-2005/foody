@@ -2,9 +2,11 @@ const express = require("express");
 const multer = require("multer");
 
 const foodController = require("../controllers/food.controlllers");
+
 const {
   authFoodPartnerMiddleware,
   authUserMiddleware,
+  optionalUserMiddleware,
 } = require("../middlewares/auth.middleware");
 
 const router = express.Router();
@@ -17,9 +19,7 @@ const upload = multer({
   },
 });
 
-// ==================== FOOD PARTNER ====================
-
-// Create food
+// Food partner
 router.post(
   "/",
   authFoodPartnerMiddleware,
@@ -27,18 +27,15 @@ router.post(
   foodController.createFood,
 );
 
-// ==================== USER ====================
+// Home feed
+// Public so both users and food partners can see it.
+router.get("/", optionalUserMiddleware, foodController.getFoodItems);
 
-// Get home feed
-router.get("/", authUserMiddleware, foodController.getFoodItems);
-
-// Like / Unlike
+// User-only actions
 router.post("/like", authUserMiddleware, foodController.likeFood);
 
-// Save / Unsave
 router.post("/save", authUserMiddleware, foodController.saveFood);
 
-// Get saved foods
 router.get("/save", authUserMiddleware, foodController.getSaveFood);
 
 module.exports = router;

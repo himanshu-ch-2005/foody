@@ -347,7 +347,11 @@
 @media (max-width: 560px) {
     .food-reel__content {
         gap: 10px;
-        padding: 18px 14px;
+
+        bottom: max(94px,
+                calc(env(safe-area-inset-bottom) + 84px));
+
+        padding: 18px 14px 12px;
     }
 
     .food-reel__topbar {
@@ -375,4 +379,29 @@
     .food-reel__actions {
         gap: 9px;
     }
+}
+
+.food-reel__content {
+    position: absolute;
+    left: 0;
+    right: 0;
+
+    /*
+    Keep the food information and action buttons
+    ABOVE the fixed bottom navigation.
+  */
+    bottom: max(96px,
+            calc(env(safe-area-inset-bottom) + 86px));
+
+    z-index: 2;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 18px;
+
+    padding: 18px 22px 12px;
+
+    color: #fff;
 }

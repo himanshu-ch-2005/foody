@@ -1,0 +1,117 @@
+.account-menu {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+}
+
+.account-menu__button {
+    width: 40px;
+    height: 40px;
+
+    display: grid;
+    place-items: center;
+
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 50%;
+
+    background: rgba(0, 0, 0, 0.28);
+    color: #fff;
+
+    cursor: pointer;
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.account-menu__button svg {
+    width: 21px;
+    height: 21px;
+
+    fill: none;
+    stroke: currentColor;
+
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.account-menu__dropdown {
+    position: absolute;
+
+    top: calc(100% + 9px);
+    right: 0;
+
+    width: 155px;
+
+    padding: 7px;
+
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 13px;
+
+    background: rgba(20, 20, 20, 0.96);
+    color: #fff;
+
+    box-shadow:
+        0 12px 35px rgba(0, 0, 0, 0.35);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    z-index: 10000;
+}
+
+.account-menu__role {
+    padding: 8px 9px 7px;
+
+    color: rgba(255, 255, 255, 0.55);
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.account-menu__logout {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 9px;
+
+    border: 0;
+    border-radius: 9px;
+
+    background: transparent;
+    color: #fff;
+
+    font: inherit;
+    font-size: 13px;
+    font-weight: 650;
+
+    text-align: left;
+
+    cursor: pointer;
+}
+
+.account-menu__logout:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.account-menu__logout:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.account-menu__logout svg {
+    width: 17px;
+    height: 17px;
+
+    fill: none;
+    stroke: currentColor;
+
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}

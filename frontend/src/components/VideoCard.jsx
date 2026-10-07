@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../services/api";
+import AccountMenu from "./AccountMenu";
 
 const HeartIcon = ({ filled }) => (
   <svg
@@ -28,13 +28,12 @@ const StoreIcon = () => (
   </svg>
 );
 
-const VideoCard = ({ food, isActive, onLike, onSave }) => {
+const VideoCard = ({ food, isActive, onLike, onSave, canInteract = true }) => {
   const videoRef = useRef(null);
   const navigate = useNavigate();
 
   const [muted, setMuted] = useState(true);
   const [expanded, setExpanded] = useState(false);
-  const [partnerLoading, setPartnerLoading] = useState(false);
 
   const description =
     food.description?.trim() || "Discover this dish on Foody.";
@@ -52,26 +51,15 @@ const VideoCard = ({ food, isActive, onLike, onSave }) => {
     video.muted = muted;
 
     if (isActive) {
-      video.currentTime = 0;
       video.play().catch(() => {});
     } else {
       video.pause();
     }
   }, [isActive, muted]);
 
-  const handleVisitStore = async () => {
-    if (!food.foodPartner || partnerLoading) return;
-
-    setPartnerLoading(true);
-
-    try {
-      await api.get(`/food-partner/${food.foodPartner}`);
-
+  const handleVisitStore = () => {
+    if (food.foodPartner) {
       navigate(`/partner/${food.foodPartner}`);
-    } catch (error) {
-      console.error("Failed to open store:", error);
-    } finally {
-      setPartnerLoading(false);
     }
   };
 
@@ -93,14 +81,24 @@ const VideoCard = ({ food, isActive, onLike, onSave }) => {
       <div className="food-reel__topbar">
         <span className="food-reel__brand">Foody</span>
 
-        <button
-          type="button"
-          className="food-reel__sound"
-          onClick={() => setMuted((value) => !value)}
-          aria-label={muted ? "Unmute video" : "Mute video"}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+          }}
         >
-          {muted ? "🔇" : "🔊"}
-        </button>
+          <button
+            type="button"
+            className="food-reel__sound"
+            onClick={() => setMuted((value) => !value)}
+            aria-label={muted ? "Unmute video" : "Mute video"}
+          >
+            {muted ? "🔇" : "🔊"}
+          </button>
+
+          <AccountMenu />
+        </div>
       </div>
 
       <div className="food-reel__content">
@@ -125,10 +123,10 @@ const VideoCard = ({ food, isActive, onLike, onSave }) => {
             type="button"
             className="food-reel__store"
             onClick={handleVisitStore}
-            disabled={partnerLoading}
+            disabled={!food.foodPartner}
           >
             <StoreIcon />
-            {partnerLoading ? "Opening..." : "Visit Store"}
+            Visit Store
           </button>
         </div>
 
@@ -137,6 +135,8 @@ const VideoCard = ({ food, isActive, onLike, onSave }) => {
             type="button"
             className={`reel-action ${food.liked ? "is-active" : ""}`}
             onClick={() => onLike(food._id)}
+            disabled={!canInteract}
+            aria-label={canInteract ? "Like food" : "Available to users"}
           >
             <HeartIcon filled={food.liked} />
             <span>{food.likeCount ?? 0}</span>
@@ -146,6 +146,8 @@ const VideoCard = ({ food, isActive, onLike, onSave }) => {
             type="button"
             className={`reel-action ${food.saved ? "is-active" : ""}`}
             onClick={() => onSave(food._id)}
+            disabled={!canInteract}
+            aria-label={canInteract ? "Save food" : "Available to users"}
           >
             <BookmarkIcon filled={food.saved} />
             <span>{food.savesCount ?? 0}</span>

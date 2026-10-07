@@ -5,7 +5,6 @@ import "../../styles/auth.css";
 import { Link, useNavigate } from "react-router-dom";
 
 const FoodPartnerLogin = () => {
-
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -40,11 +39,14 @@ const FoodPartnerLogin = () => {
         },
       );
 
-      setMessage(response.data?.message || "Login successful!");
       localStorage.setItem("role", "partner");
-      navigate("/create-food");
+
+      setMessage(response.data?.message || "Login successful!");
+
+      navigate("/");
     } catch (error) {
-        setMessage("");
+      setMessage("");
+
       setError(
         error.response?.data?.message ||
           "Login failed. Please check your credentials.",
