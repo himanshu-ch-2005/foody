@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import AuthInput from "../../components/AuthInput";
 import "../../styles/auth.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -32,13 +32,7 @@ const UserRegister = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/auth/user/register",
-        formData,
-        {
-          withCredentials: true,
-        },
-      );
+      const response = await api.post("/auth/user/register", formData);
 
       localStorage.setItem("role", "user");
 

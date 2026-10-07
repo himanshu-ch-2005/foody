@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import AuthInput from "../../components/AuthInput";
 import "../../styles/auth.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -31,13 +31,7 @@ const FoodPartnerLogin = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/auth/partner/login",
-        formData,
-        {
-          withCredentials: true,
-        },
-      );
+      const response = await api.post("/auth/partner/login", formData);
 
       localStorage.setItem("role", "partner");
 

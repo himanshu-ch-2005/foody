@@ -1,9 +1,10 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import AuthInput from "../../components/AuthInput";
 import "../../styles/auth.css";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+
 
 const UserLogin = () => {
   const navigate = useNavigate();
@@ -31,13 +32,7 @@ const UserLogin = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/auth/user/login",
-        formData,
-        {
-          withCredentials: true,
-        },
-      );
+      const response = await api.post("/auth/user/login", formData);
 
       setMessage(response.data?.message || "Login successful!");
 
